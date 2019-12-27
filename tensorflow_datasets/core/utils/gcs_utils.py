@@ -57,7 +57,11 @@ def gcs_path(suffix: Optional[str] = None) -> str:
 def gcs_listdir(dir_name: str) -> Optional[List[str]]:
   """List all files in the given GCS dir (`['dataset/1.0.0/file0', ...]`)."""
   root_dir = gcs_path(dir_name)
-  if _is_gcs_disabled or not tf.io.gfile.exists(root_dir):
+  try:
+    exists = tf.io.gfile.exists(root_dir)
+  except tf.errors.FailedPreconditionError:
+    exists = False
+  if _is_gcs_disabled or not exists:
     return None
   return [posixpath.join(dir_name, f) for f in tf.io.gfile.listdir(root_dir)]
 
@@ -70,7 +74,11 @@ def gcs_dataset_info_files(dataset_dir: str) -> Optional[List[str]]:
 def is_dataset_on_gcs(dataset_name: str) -> bool:
   """If the dataset is available on the GCS bucket gs://tfds-data/datasets."""
   dir_name = posixpath.join(GCS_DATASETS_DIR, dataset_name)
-  return not _is_gcs_disabled and tf.io.gfile.exists(gcs_path(dir_name))
+  try:
+    exists = tf.io.gfile.exists(gcs_path(dir_name))
+  except tf.errors.FailedPreconditionError:
+    exists = False
+  return not _is_gcs_disabled and exists
 
 
 def download_gcs_dataset(
