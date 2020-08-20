@@ -108,10 +108,10 @@ def _create_dataset_files(args: argparse.Namespace) -> None:
   info = DatasetInfo(name=ds_name, in_tfds=in_tfds, path=root_dir)
 
   _create_dataset(info)
-  _create_dataset_test(info)
-  _create_init(info)
-  _create_dummy_data(info)
-  _create_checksum(info)
+  create_dataset_test(info)
+  create_init(info)
+  create_dummy_data(info)
+  create_checksum(info)
 
   print(
       'Dataset generated at {}\n'
@@ -185,7 +185,7 @@ def _create_dataset(info: DatasetInfo) -> None:
   file_path.write_text(content)
 
 
-def _create_dataset_test(info: DatasetInfo) -> None:
+def create_dataset_test(info: DatasetInfo) -> None:
   """Adds the `dummy_data/` directory."""
   file_path = info.path.joinpath(f'{info.name}_test.py')
 
@@ -220,7 +220,7 @@ def _create_dataset_test(info: DatasetInfo) -> None:
   file_path.write_text(content)
 
 
-def _create_init(info: DatasetInfo) -> None:
+def create_init(info: DatasetInfo) -> None:
   """Adds the `__init__.py` file."""
   file_path = info.path / '__init__.py'
   if info.in_tfds:
@@ -240,7 +240,7 @@ def _create_init(info: DatasetInfo) -> None:
   file_path.write_text(content)
 
 
-def _create_dummy_data(info: DatasetInfo) -> None:
+def create_dummy_data(info: DatasetInfo) -> None:
   """Adds the `dummy_data/` directory."""
   # Create a dummy file in the directory to force the directory creation in
   # version control system where empty directories aren't detected.
@@ -249,7 +249,7 @@ def _create_dummy_data(info: DatasetInfo) -> None:
   file_path.touch()
 
 
-def _create_checksum(info: DatasetInfo) -> None:
+def create_checksum(info: DatasetInfo) -> None:
   """Adds the `checksums.tsv` file."""
   file_path = info.path / 'checksums.tsv'
   content = textwrap.dedent(
