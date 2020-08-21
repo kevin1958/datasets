@@ -409,6 +409,11 @@ def _rel_to_abs_instr(rel_instr, name2len):
 class ReadInstruction(object):
   """Reading instruction for a dataset.
 
+  Note that due to reading parallelism the sequence of examples changes when
+  using different sets of ReadInstruction. In other words, reading first
+  'test[0:100]' and then reading 'test[100:200]' would result in a different
+  set of examples from reading 'test[0:200]'.
+
   Examples of usage:
 
   ```
